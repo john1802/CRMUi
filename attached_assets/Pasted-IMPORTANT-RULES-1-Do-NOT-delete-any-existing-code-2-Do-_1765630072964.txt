@@ -1,0 +1,82 @@
+IMPORTANT RULES:
+1. Do NOT delete any existing code
+2. Do NOT refactor or restructure components
+3. Do NOT overwrite files unless explicitly allowed
+4. Make ONLY minimal changes required
+5. If unsure, ASK before making changes
+
+PROJECT CONTEXT:
+- Framework / Stack: <React / Angular / Razor / .NET / etc.>
+- Feature / Screen: <Modal name / Page name>
+- Component / File (if known): <file path>
+
+CURRENT BEHAVIOR:
+- <What is happening now>
+- <What is visible / broken>
+- <What works correctly>
+
+PROBLEM:
+- <Exact issue in one or two lines>
+- <What fails when user interacts>
+
+EXPECTED BEHAVIOR:
+- <What should happen instead>
+- <What must remain unchanged>
+
+REQUIREMENTS / CONSTRAINTS:
+- <What must NOT be changed (z-index, layout, logic, API)>
+- <Specific UI/UX rules>
+
+TASK:
+- Identify the root cause
+- Apply the smallest possible fix
+- Ensure correct behavior
+
+SCOPE:
+- Modify ONLY <specific component / feature>
+- Do NOT touch unrelated files or logic
+
+AFTER CHANGES:
+- Briefly explain what was changed and why
+
+========================================================
+ REAL EXAMPLE:  
+
+IMPORTANT RULES:
+1. Do NOT delete any existing code
+2. Do NOT refactor components
+3. Do NOT change z-index values
+4. Make ONLY minimal UI interaction fixes
+5. If unsure, ASK before modifying
+
+PROJECT CONTEXT:
+- Framework: React (Vite + TS)
+- Feature: Create Client Modal
+- Component: Toast notification
+
+CURRENT BEHAVIOR:
+- Toast is visible above the modal
+- Close (❌ X) icon is visible
+- Clicking the ❌ X does nothing
+
+PROBLEM:
+- Click events on toaster close icon are blocked
+
+EXPECTED BEHAVIOR:
+- Clicking ❌ should close the toaster
+- Modal must remain open
+- Toast must stay above modal
+
+REQUIREMENTS:
+- Do NOT change z-index
+- Do NOT hide the toast
+
+TASK:
+- Fix click handling for toaster close button
+- Ensure pointer events work correctly
+
+SCOPE:
+- Modify ONLY toast-related code
+
+AFTER CHANGES:
+- Explain why the click was blocked and how it was fixed

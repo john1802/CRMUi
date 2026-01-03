@@ -1,0 +1,208 @@
+IMPORTANT RULES:
+1. Do NOT delete any existing code
+2. Do NOT refactor or restructure components
+3. Do NOT overwrite files unless explicitly allowed
+4. Make ONLY minimal changes required
+5. If unsure, ASK before making changes
+
+PROJECT CONTEXT:
+- Framework / Stack: React + ts
+- Feature / Screen: Entity.tsx
+CURRENT BEHAVIOR:
+- Current entity screen was not fulfil my requirement 
+PROBLEM:
+-Change the Screen like what I mentioned below
+EXPECTED BEHAVIOR:
+- I will share the expected images you should restructure exactly how the image shows, need Side bar and theme should like a Login screen
+REQUIREMENTS / CONSTRAINTS:
+- Design should exactly match 
+TASK:
+- ENTITY UI – TECHNICAL DOCUMENTATION
+
+Scope: Entity (Modules) UI
+Backend Controller: EntitiesController
+Frontend Stack: React + Vite + TypeScript + MUI
+
+1️⃣ PURPOSE OF ENTITY UI
+
+The Entity UI represents Modules / Objects in the CRM.
+
+Examples:
+
+Leads
+
+Contacts
+
+Products
+
+Orders
+
+This UI allows the user to:
+
+View all entities
+
+Open an entity
+
+Load its dynamic definition (fields + lookups)
+
+(Optional Admin) Create / Edit / Delete entities
+
+2️⃣ BACKEND ENDPOINTS SUMMARY (SOURCE OF TRUTH)
+Method	Endpoint	Purpose
+POST	/api/entities	Create entity
+GET	/api/entities	List entities
+GET	/api/entities/{id}	Get entity by ID
+GET	/api/entities/slug/{slug}	Get entity by slug
+PUT	/api/entities/{id}	Update entity
+DELETE	/api/entities/{id}	Delete entity
+GET	/api/entities/{id}/definition	Load UI metadata
+3️⃣ UI SCREENS REQUIRED (ENTITY ONLY)
+Screen 1: Entity List Screen
+
+URL: /entities
+
+Uses: GET /api/entities
+
+Screen 2: Entity Definition Loader (Hidden)
+
+No visible screen
+
+Used internally by Record screens
+
+Uses: GET /api/entities/{id}/definition
+
+(Optional – Admin)
+
+Create Entity Screen
+
+Edit Entity Screen
+
+4️⃣ FRONTEND FOLDER STRUCTURE (ENTITY SCOPE)
+src/
+  api/
+    entityApi.ts
+
+  pages/
+    Entity/
+      ListEntities.tsx
+      EntityCard.tsx
+
+  types/
+    entity.ts
+    field.ts
+
+5️⃣ DATA MODELS (TypeScript)
+types/entity.ts
+export interface Entity {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+types/field.ts
+export interface Field {
+  id: string;
+  name: string;
+  label: string;
+  dataType: string;
+  isRequired: boolean;
+  lookupEntityId?: string;
+}
+UI Component Responsibilities
+ListEntities.tsx
+
+Fetch entities
+
+Handle loading & empty states
+
+Render list of cards
+
+EntityCard.tsx
+
+Display entity name & slug
+
+Handle click navigation
+
+Navigation Logic
+/entity/{entityId}/records
+ENTITY DEFINITION API (CRITICAL FOR UI)
+Endpoint
+GET /api/entities/{id}/definition
+
+Purpose
+
+This endpoint drives all dynamic UI:
+
+Fields
+
+Field types
+
+Lookup dropdowns
+
+Response Structure
+{
+  "entity": { "id": "...", "name": "Leads" },
+  "fields": [
+    {
+      "name": "name",
+      "label": "Name",
+      "dataType": "text",
+      "isRequired": true
+    },
+    {
+      "name": "product",
+      "label": "Product",
+      "dataType": "lookup",
+      "lookupEntityId": "uuid"
+    }
+  ],
+  "lookups": {
+    "uuid": [
+      { "id": "1", "name": "Laptop" }
+    ]
+  }
+}
+ENTITY DEFINITION API (CRITICAL FOR UI)
+Endpoint
+GET /api/entities/{id}/definition
+
+Purpose
+
+This endpoint drives all dynamic UI:
+
+Fields
+
+Field types
+
+Lookup dropdowns
+
+Response Structure
+{
+  "entity": { "id": "...", "name": "Leads" },
+  "fields": [
+    {
+      "name": "name",
+      "label": "Name",
+      "dataType": "text",
+      "isRequired": true
+    },
+    {
+      "name": "product",
+      "label": "Product",
+      "dataType": "lookup",
+      "lookupEntityId": "uuid"
+    }
+  ],
+  "lookups": {
+    "uuid": [
+      { "id": "1", "name": "Laptop" }
+    ]
+  }
+}
+SCOPE:
+- The entity list screen should be our theme and side bar should be a collapse like I mentioned in first image 
+- Create entity screen like a I mentioned a second image it should come like popup 
+- lookups should come like another popup like I mentioned
+
+AFTER CHANGES:
+- Briefly explain what was changed and why

@@ -1,0 +1,202 @@
+import type { SxProps, Theme } from '@mui/system';
+
+export const styles: { [key: string]: SxProps<Theme> } = {
+  container: {
+    height: '100vh',
+    display: 'flex',
+    backgroundColor: '#E5E1D6',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  leftSection: {
+    width: '25%',
+    display: { xs: 'none', md: 'flex' },
+    flexDirection: 'column',
+    p: 4,
+    position: 'relative',
+  },
+  logo: {
+    fontSize: '1.5rem',
+    fontWeight: 700,
+    color: '#333',
+    mb: 1,
+  },
+  email: {
+    color: '#666',
+    fontSize: '0.875rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+  },
+  decorativeElements: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: 'none',
+    '& .doodle': {
+      position: 'absolute',
+      opacity: 0.6,
+    },
+  },
+  centerSection: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    p: 4,
+    position: 'relative',
+    zIndex: 2,
+  },
+  rightSection: {
+    width: '25%',
+    display: { xs: 'none', md: 'block' },
+    position: 'relative',
+    overflow: 'visible',
+  },
+  loginCard: {
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    p: 4,
+    py: 3,
+    width: '100%',
+    maxWidth: 420,
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    position: 'relative',
+    zIndex: 1,
+  },
+  title: {
+    fontSize: '1.75rem',
+    fontWeight: 700,
+    textAlign: 'center',
+    color: '#333',
+    mb: 1,
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: '#666',
+    mb: 3,
+    fontSize: '0.9rem',
+  },
+  textField: {
+    mb: 2,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 2,
+      backgroundColor: '#fafafa',
+      '& fieldset': {
+        borderColor: '#e0e0e0',
+      },
+      '&:hover fieldset': {
+        borderColor: '#bdbdbd',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#f5a623',
+      },
+    },
+  },
+  forgotPassword: {
+    textAlign: 'right',
+    mb: 2,
+  },
+  forgotPasswordLink: {
+    color: '#333',
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  signInButton: {
+    py: 1.5,
+    borderRadius: 2,
+    textTransform: 'none',
+    fontSize: '1rem',
+    fontWeight: 600,
+    backgroundColor: '#f5a623',
+    '&:hover': {
+      backgroundColor: '#e09612',
+    },
+  },
+  divider: {
+    my: 2,
+    color: '#999',
+    '&::before, &::after': {
+      borderColor: '#e0e0e0',
+    },
+  },
+  socialButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 2,
+    mb: 2,
+  },
+  socialButton: {
+    flex: 1,
+    py: 1,
+    borderRadius: 2,
+    textTransform: 'none',
+    color: '#333',
+    borderColor: '#e0e0e0',
+    '&:hover': {
+      borderColor: '#bdbdbd',
+      backgroundColor: '#fafafa',
+    },
+  },
+  signupText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: '0.875rem',
+  },
+  signupLink: {
+    color: '#333',
+    fontWeight: 600,
+    cursor: 'pointer',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    p: 3,
+    display: 'flex',
+    gap: 2,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  headerButton: {
+    color: '#333',
+    textTransform: 'none',
+  },
+  requestDemoButton: {
+    backgroundColor: '#f5a623',
+    color: '#fff',
+    textTransform: 'none',
+    px: 3,
+    borderRadius: 2,
+    '&:hover': {
+      backgroundColor: '#e09612',
+    },
+  },
+  illustration: {
+    position: 'absolute',
+    bottom: '10%',
+    right: '10%',
+    width: '300px',
+    height: 'auto',
+    zIndex: 0,
+  },
+  womanIllustration: {
+    position: 'absolute',
+    bottom: '5%',
+    left: '-60px',
+    width: '420px',
+    height: 'auto',
+    zIndex: 1,
+    objectFit: 'contain',
+  },
+};

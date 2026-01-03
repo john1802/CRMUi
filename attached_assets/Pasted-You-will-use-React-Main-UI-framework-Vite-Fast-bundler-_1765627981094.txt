@@ -1,0 +1,171 @@
+You will use:
+
+✔ React
+
+Main UI framework.
+
+✔ Vite
+
+Fast bundler for React.
+
+✔ TypeScript
+
+Strict typing, easier to maintain large CRM UI.
+
+✔ Material UI (MUI)
+
+For UI components (buttons, grids, forms).
+
+✔ Axios
+
+For API communication with backend.
+
+✔ React Router DOM
+
+For page navigation.
+
+✔ Reducer (useReducer)
+
+State management for forms and auth (instead of Redux).
+
+✔ JWT LocalStorage
+
+To store authentication tokens.
+
+⭐ PART 2 — Folder Structure (Professional)
+
+Here is the folder architecture you MUST create:
+
+src/
+  api/
+    axiosClient.ts
+    authApi.ts
+    entityApi.ts
+    fieldApi.ts
+    recordApi.ts
+
+  components/
+    layout/
+      Sidebar.tsx
+      Navbar.tsx
+    dynamic-form/
+      DynamicForm.tsx
+      FieldRenderer.tsx
+    dynamic-list/
+      DynamicList.tsx
+
+  pages/
+    Login/
+      Login.tsx
+      Login.styles.ts
+      Login.types.ts
+    Dashboard/
+      Dashboard.tsx
+    Entity/
+      ListEntities.tsx
+    Records/
+      ListRecords.tsx
+      CreateRecord.tsx
+      EditRecord.tsx
+
+  reducers/
+    authReducer.ts
+    formReducer.ts
+
+  hooks/
+    useAuth.ts
+    useFetchDefinition.ts
+
+  types/
+    entity.ts
+    field.ts
+    record.ts
+
+  utils/
+    storage.ts
+
+  App.tsx
+  main.tsx
+
+
+This matches enterprise-level CRM frontend structure.
+
+⭐ PART 3 — Login Screen Documentation
+✔ Purpose
+
+Authenticate user using backend API:
+
+POST /auth/login
+
+✔ Required user input
+
+Email
+
+Password
+
+✔ After login
+
+Store JWT token in localStorage
+
+Store tenantId in localStorage
+
+Redirect to Dashboard
+
+📌 Technical Requirements (Frontend)
+API Setup
+
+Login endpoint:
+
+POST /auth/login
+{
+  "email": "admin@gmail.com",
+  "password": "123456"
+}
+
+
+Backend returns:
+
+{
+  "token": "jwt-token-here"
+}
+
+📌 MUI Components to Use
+
+<Card />
+
+<TextField />
+
+<Button />
+
+<Box />
+
+<Typography />
+
+📌 Logic Flow
+
+User enters email/password
+
+You call AuthApi.login()
+
+If success:
+
+Save token to localStorage
+
+Save tenantId:
+
+either user enters
+
+or from login response
+
+Redirect to /dashboard
+
+📌 Login API Wrapper
+
+src/api/authApi.ts
+
+import axiosClient from "./axiosClient";
+
+export const AuthApi = {
+  login: (payload: { email: string; password: string }) =>
+    axiosClient.post("/auth/login", payload),
+};
