@@ -177,7 +177,7 @@ export const ListEntities = () => {
           ) : (
             <Grid container spacing={3}>
               {filteredEntities.length === 0 ? (
-                <Grid xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
                     No entities found. Create one to get started.
                   </Box>
@@ -189,6 +189,7 @@ export const ListEntities = () => {
                       entity={entity}
                       onClick={() => navigate(`/entities/${entity.id}/records`)}
                       onEdit={(e) => handleOpenEditDrawer(e, entity)}
+                      onDesign={() => navigate(`/entities/${entity.id}/builder`)}
                     />
                   </Grid>
                 ))
@@ -249,7 +250,7 @@ export const ListEntities = () => {
                   GENERAL INFORMATION
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <TextField
                       autoFocus
                       label="Fullname"
@@ -259,7 +260,7 @@ export const ListEntities = () => {
                       onChange={(e) => dispatch({ type: 'UPDATE_FORM', field: 'name', value: e.target.value })}
                     />
                   </Grid>
-                  <Grid xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <TextField
                       label="Slug (URL Friendly)"
                       placeholder="e.g., customers, projects"
@@ -269,7 +270,7 @@ export const ListEntities = () => {
                       onChange={(e) => dispatch({ type: 'UPDATE_FORM', field: 'slug', value: e.target.value })}
                     />
                   </Grid>
-                  <Grid xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <TextField
                       label="Configuration JSON"
                       placeholder='{"theme": "dark"}'

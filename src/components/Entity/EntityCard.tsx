@@ -1,14 +1,15 @@
 import { Box, Paper, Typography, Avatar, Chip, IconButton, alpha } from '@mui/material';
-import { Edit as EditIcon, Circle as CircleIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Circle as CircleIcon, DashboardCustomize as DashboardCustomizeIcon } from '@mui/icons-material';
 import { Entity } from '../../types/entity';
 
 interface EntityCardProps {
     entity: Entity;
     onClick: () => void;
     onEdit: (e: React.MouseEvent) => void;
+    onDesign?: (e: React.MouseEvent) => void;
 }
 
-export const EntityCard = ({ entity, onClick, onEdit }: EntityCardProps) => {
+export const EntityCard = ({ entity, onClick, onEdit, onDesign }: EntityCardProps) => {
     return (
         <Paper
             elevation={0}
@@ -80,6 +81,20 @@ export const EntityCard = ({ entity, onClick, onEdit }: EntityCardProps) => {
                     </Typography>
                 </Box>
 
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDesign?.(e);
+                    }}
+                    sx={{
+                        color: 'text.secondary',
+                        '&:hover': { color: 'primary.main', backgroundColor: alpha('#1E1E2D', 0.05) }
+                    }}
+                    title="Design Screen"
+                >
+                    <DashboardCustomizeIcon fontSize="small" />
+                </IconButton>
                 <IconButton
                     size="small"
                     onClick={(e) => {

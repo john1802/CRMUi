@@ -30,7 +30,7 @@ export const CreateRecord = () => {
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
-    
+
     fields.forEach((field) => {
       if (field.isRequired && !values[field.name]) {
         newErrors[field.name] = `${field.displayName} is required`;
@@ -81,7 +81,7 @@ export const CreateRecord = () => {
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1 }}>
-        <Navbar title={`Create ${entity?.displayName || 'Record'}`} />
+        <Navbar title={`Create ${entity?.name || 'Record'}`} />
         <Box
           component="main"
           sx={{
@@ -92,9 +92,9 @@ export const CreateRecord = () => {
             minHeight: 'calc(100vh - 64px)',
           }}
         >
-          <Paper sx={{ p: 4, borderRadius: 2, maxWidth: 800, mx: 'auto' }}>
-            <Typography variant="h5" fontWeight={600} gutterBottom>
-              Create New {entity?.displayName || 'Record'}
+          <Paper sx={{ p: 4, borderRadius: 2, maxWidth: 1440, mx: 'auto' }}>
+            <Typography variant="h5" fontWeight={800} gutterBottom sx={{ color: '#1E1E2D', mb: 4 }}>
+              Create New {entity?.name || 'Record'}
             </Typography>
 
             {submitError && (

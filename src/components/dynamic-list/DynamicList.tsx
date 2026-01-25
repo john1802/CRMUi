@@ -15,6 +15,7 @@ import {
   Button,
   TextField,
   InputAdornment,
+  CircularProgress,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import {
@@ -24,23 +25,39 @@ import {
   Search as SearchIcon,
 } from '@mui/icons-material';
 import { Field } from '../../types/field';
-import { Record } from '../../types/record';
+import { Record as EntityRecord } from '../../types/record';
+
+import { FilterBar } from './FilterBar';
+
+interface FilterOption {
+  label: string;
+  value: string;
+}
 
 interface DynamicListProps {
   entityName: string;
   fields: Field[];
-  records: Record[];
+  records: EntityRecord[];
   total: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
-  onEdit: (record: Record) => void;
-  onDelete: (record: Record) => void;
-  onBulkDelete?: (records: Record[]) => void;
+  onEdit: (record: EntityRecord) => void;
+  onDelete: (record: EntityRecord) => void;
+  onBulkDelete?: (records: EntityRecord[]) => void;
   onCreate: () => void;
   onSearch?: (search: string) => void;
   isLoading?: boolean;
+  // Filter props
+  filters?: {
+    label: string;
+    key: string;
+    options: FilterOption[];
+  }[];
+  activeFilters?: { [key: string]: string };
+  onFilterChange?: (key: string, value: string) => void;
+  onClearFilters?: () => void;
 }
 
 export const DynamicList = ({
@@ -58,6 +75,10 @@ export const DynamicList = ({
   onCreate,
   onSearch,
   isLoading = false,
+  filters,
+  activeFilters = {},
+  onFilterChange,
+  onClearFilters
 }: DynamicListProps) => {
   const [selected, setSelected] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,153 +112,299 @@ export const DynamicList = ({
     }
   };
 
-  const displayFields = fields.slice(0, 5);
+  const displayFields = fields.slice(0, 6);
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0' }}>
-      <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 800 }}>
-          {entityName}
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          {onSearch && (
-            <TextField
-              size="small"
-              placeholder="Search records..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
+    <Box>
+      {filters && onFilterChange && onClearFilters && (
+        <FilterBar
+          filters={filters}
+          activeFilters={activeFilters}
+          onFilterChange={onFilterChange}
+          onClear={onClearFilters}
+        />
+      )}
+
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: '16px',
+          backgroundColor: '#fff',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.02)',
+          border: '1px solid #EFF2F5',
+        }}
+      >
+        <Box sx={{ p: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 800, color: '#1E1E2D' }}>
+              {entityName}
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#A2A3B7', fontWeight: 500 }}>
+              Management and overview of {entityName.toLowerCase()} records
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            {onSearch && (
+              <TextField
+                size="small"
+                placeholder="Search records..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                sx={{
+                  width: 300,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '12px',
+                    backgroundColor: '#F8FAFB',
+                    border: '1px solid #EFF2F5',
+                    '& fieldset': { border: 'none' },
+                    '&:hover': { backgroundColor: '#F1F4F6' },
+                  }
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#A2A3B7' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+            {selected.length > 0 && onBulkDelete && (
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleBulkDelete}
+                sx={{
                   borderRadius: '12px',
-                  backgroundColor: '#F4F7F6',
-                  '& fieldset': { border: 'none' },
-                }
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: '#6c757d' }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-          {selected.length > 0 && onBulkDelete && (
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 16px rgba(244, 67, 54, 0.2)',
+                }}
+              >
+                Delete Selected ({selected.length})
+              </Button>
+            )}
             <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={handleBulkDelete}
-              sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={onCreate}
+              sx={{
+                borderRadius: '12px',
+                textTransform: 'none',
+                fontWeight: 700,
+                px: 4,
+                boxShadow: '0 8px 16px rgba(255, 193, 7, 0.3)',
+              }}
             >
-              Delete ({selected.length})
+              Create {entityName.slice(0, -1)}
             </Button>
-          )}
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={onCreate}
-            sx={{
-              borderRadius: '12px',
-              textTransform: 'none',
-              fontWeight: 700,
-              px: 3,
-              boxShadow: '0 8px 16px rgba(255, 193, 7, 0.2)',
-            }}
-          >
-            Add New
-          </Button>
+          </Box>
         </Box>
-      </Box>
-      <TableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox" sx={{ backgroundColor: '#fcfcfc' }}>
-                <Checkbox
-                  indeterminate={selected.length > 0 && selected.length < records.length}
-                  checked={records.length > 0 && selected.length === records.length}
-                  onChange={handleSelectAll}
-                  sx={{ color: '#A2A3B7', '&.Mui-checked': { color: '#FFC107' } }}
-                />
-              </TableCell>
-              {displayFields.map((field) => (
-                <TableCell key={field.id} sx={{ fontWeight: 700, backgroundColor: '#fcfcfc', color: '#1E1E2D' }}>
-                  {field.displayName}
-                </TableCell>
-              ))}
-              <TableCell align="right" sx={{ fontWeight: 700, backgroundColor: '#fcfcfc', color: '#1E1E2D' }}>
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
+        <TableContainer>
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={displayFields.length + 2} align="center" sx={{ py: 8 }}>
-                  <Typography sx={{ color: '#6c757d' }}>Loading records...</Typography>
+                <TableCell padding="checkbox" sx={{ backgroundColor: '#F8FAFB', borderBottom: '1px solid #EFF2F5' }}>
+                  <Checkbox
+                    indeterminate={selected.length > 0 && selected.length < records.length}
+                    checked={records.length > 0 && selected.length === records.length}
+                    onChange={handleSelectAll}
+                    sx={{ color: '#D1D5DB', '&.Mui-checked': { color: '#FFC107' } }}
+                  />
                 </TableCell>
-              </TableRow>
-            ) : records.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={displayFields.length + 2} align="center" sx={{ py: 8 }}>
-                  <Typography sx={{ color: '#6c757d' }}>No records found</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              records.map((record) => (
-                <TableRow
-                  key={record.id}
-                  hover
-                  selected={selected.includes(record.id)}
-                  sx={{ '&:hover': { backgroundColor: '#f8f9fa !important' } }}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selected.includes(record.id)}
-                      onChange={() => handleSelect(record.id)}
-                      sx={{ color: '#A2A3B7', '&.Mui-checked': { color: '#FFC107' } }}
-                    />
+                {displayFields.map((field) => (
+                  <TableCell
+                    key={field.id}
+                    sx={{
+                      fontWeight: 700,
+                      backgroundColor: '#F8FAFB',
+                      color: '#6c757d',
+                      textTransform: 'uppercase',
+                      fontSize: '0.75rem',
+                      letterSpacing: '0.05em',
+                      borderBottom: '1px solid #EFF2F5',
+                      py: 2
+                    }}
+                  >
+                    {field.displayName}
                   </TableCell>
-                  {displayFields.map((field) => (
-                    <TableCell key={field.id} sx={{ fontWeight: 500 }}>
-                      {String(record.data[field.name] ?? '-')}
-                    </TableCell>
-                  ))}
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => onEdit(record)}
-                        sx={{ color: '#6c757d', '&:hover': { color: '#1E1E2D', backgroundColor: alpha('#1E1E2D', 0.05) } }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => onDelete(record)}
-                        sx={{ color: '#ff4d4f', '&:hover': { color: '#cf1322', backgroundColor: alpha('#ff4d4f', 0.1) } }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
+                ))}
+                <TableCell
+                  align="right"
+                  sx={{
+                    fontWeight: 700,
+                    backgroundColor: '#F8FAFB',
+                    color: '#6c757d',
+                    textTransform: 'uppercase',
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #EFF2F5',
+                    py: 2
+                  }}
+                >
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={displayFields.length + 2} align="center" sx={{ py: 12 }}>
+                    <CircularProgress size={30} sx={{ mb: 2 }} />
+                    <Typography sx={{ color: '#A2A3B7', fontWeight: 500 }}>Fetching your data...</Typography>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={total}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(_, newPage) => onPageChange(newPage)}
-        onRowsPerPageChange={(e) => onRowsPerPageChange(parseInt(e.target.value, 10))}
-        sx={{ borderTop: '1px solid #f0f0f0' }}
-      />
-    </Paper>
+              ) : records.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={displayFields.length + 2} align="center" sx={{ py: 12 }}>
+                    <Box sx={{ opacity: 0.5 }}>
+                      <SearchIcon sx={{ fontSize: 48, color: '#D1D5DB', mb: 2 }} />
+                    </Box>
+                    <Typography sx={{ color: '#A2A3B7', fontWeight: 500 }}>No {entityName.toLowerCase()} found</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                records.map((record) => (
+                  <TableRow
+                    key={record.id}
+                    hover
+                    selected={selected.includes(record.id)}
+                    sx={{
+                      transition: 'all 0.2s',
+                      '&.Mui-selected': { backgroundColor: alpha('#FFC107', 0.04) + ' !important' },
+                      '&:hover': { backgroundColor: '#F8FAFB !important' },
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <TableCell padding="checkbox" sx={{ borderBottom: '1px solid #F1F4F6' }}>
+                      <Checkbox
+                        checked={selected.includes(record.id)}
+                        onChange={() => handleSelect(record.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        sx={{ color: '#D1D5DB', '&.Mui-checked': { color: '#FFC107' } }}
+                      />
+                    </TableCell>
+                    {displayFields.map((field, idx) => (
+                      <TableCell
+                        key={field.id}
+                        sx={{
+                          fontWeight: 600,
+                          color: '#1E1E2D',
+                          borderBottom: '1px solid #F1F4F6',
+                          py: 2.5
+                        }}
+                      >
+                        {idx === 0 ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{
+                              width: 44,
+                              height: 44,
+                              borderRadius: '8px',
+                              bgcolor: alpha('#FFC107', 0.1),
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              overflow: 'hidden'
+                            }}>
+                              {record.data['image'] || record.data['avatar'] ? (
+                                <img src={String(record.data['image'] || record.data['avatar'])} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              ) : (
+                                <Typography sx={{ color: 'primary.main', fontWeight: 800 }}>{String(record.data[field.name]).charAt(0)}</Typography>
+                              )}
+                            </Box>
+                            <Box>
+                              <Typography sx={{ fontWeight: 700, color: '#1E1E2D', fontSize: '0.9rem' }}>
+                                {String(record.data[field.name] ?? '-')}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: '#A2A3B7', fontWeight: 600 }}>
+                                ID: {record.id.slice(0, 8)}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        ) : field.fieldType === 'boolean' ? (
+                          <Box sx={{
+                            display: 'inline-flex',
+                            px: 1.5,
+                            py: 0.5,
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            backgroundColor: record.data[field.name] ? alpha('#4caf50', 0.1) : alpha('#f44336', 0.1),
+                            color: record.data[field.name] ? '#4caf50' : '#f44336'
+                          }}>
+                            {record.data[field.name] ? 'ACTIVE' : 'INACTIVE'}
+                          </Box>
+                        ) : field.fieldType === 'select' ? (
+                          <Box sx={{
+                            display: 'inline-flex',
+                            px: 1.5,
+                            py: 0.5,
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            backgroundColor: '#F4F7F6',
+                            color: '#1E1E2D'
+                          }}>
+                            {String(record.data[field.name] ?? '-')}
+                          </Box>
+                        ) : (
+                          String(record.data[field.name] ?? '-')
+                        )}
+                      </TableCell>
+                    ))}
+                    <TableCell align="right" sx={{ borderBottom: '1px solid #F1F4F6', py: 2.5 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => { e.stopPropagation(); onEdit(record); }}
+                          sx={{
+                            color: '#A2A3B7',
+                            backgroundColor: '#F8FAFB',
+                            '&:hover': { color: '#FFC107', backgroundColor: alpha('#FFC107', 0.1) }
+                          }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => { e.stopPropagation(); onDelete(record); }}
+                          sx={{
+                            color: '#A2A3B7',
+                            backgroundColor: '#F8FAFB',
+                            '&:hover': { color: '#f44336', backgroundColor: alpha('#f44336', 0.1) }
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={total}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(e) => onRowsPerPageChange(parseInt(e.target.value, 10))}
+          sx={{
+            borderTop: '1px solid #EFF2F5',
+            '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
+              fontWeight: 600,
+              color: '#6c757d'
+            }
+          }}
+        />
+      </Paper>
+    </Box>
   );
 };
